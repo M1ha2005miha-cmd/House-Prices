@@ -1,0 +1,14 @@
+# Датасет
+data/
+
+# Виртуальное окружение
+.venv/
+
+# Служеьные данные
+__pycache__/
+
+# ipynb
+.ipynb_checkpoints/
+
+# Служебный файл macOS
+.DS_Store
