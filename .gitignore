@@ -12,3 +12,6 @@ __pycache__/
 
 # Служебный файл macOS
 .DS_Store
+
+# черновик ipynb
+nn.ipynb
