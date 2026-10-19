@@ -20,6 +20,9 @@ QUALITY_COLS = [
 
 QUALITY_MAP = {'None': 0, 'Po': 1, 'Fa': 2, 'TA': 3, 'Gd': 4, 'Ex': 5}
 
+OUTLIER_MIN_AREA = 4000
+
+OUTLIER_MAX_PRICE = 300000
 
 def fill_absent_features(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
@@ -38,3 +41,7 @@ def convert_mssubclass_to_category(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
     df['MSSubClass'] = df['MSSubClass'].astype(str)
     return df
+
+def remove_outliers(df: pd.DataFrame) -> pd.DataFrame:
+    outliers = (df['GrLivArea'] > OUTLIER_MIN_AREA) & (df['SalePrice'] < OUTLIER_MAX_PRICE)
+    return df[~outliers]
