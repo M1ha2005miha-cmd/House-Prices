@@ -32,3 +32,9 @@ def encode_quality_features(df: pd.DataFrame) -> pd.DataFrame:
     for col in QUALITY_COLS:
         df[col] = df[col].map(QUALITY_MAP)
     return df
+
+
+def convert_mssubclass_to_category(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
+    df['MSSubClass'] = df['MSSubClass'].astype(str)
+    return df
