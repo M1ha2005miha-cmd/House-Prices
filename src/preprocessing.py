@@ -45,3 +45,9 @@ def convert_mssubclass_to_category(df: pd.DataFrame) -> pd.DataFrame:
 def remove_outliers(df: pd.DataFrame) -> pd.DataFrame:
     outliers = (df['GrLivArea'] > OUTLIER_MIN_AREA) & (df['SalePrice'] < OUTLIER_MAX_PRICE)
     return df[~outliers]
+
+def apply_static_transform(df: pd.DataFrame) -> pd.DataFrame:
+    df = fill_absent_features(df)
+    df = encode_quality_features(df)
+    df = convert_mssubclass_to_category(df)
+    return df
