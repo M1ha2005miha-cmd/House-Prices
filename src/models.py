@@ -22,7 +22,7 @@ def get_regressor(name: str) -> BaseEstimator:
             random_state=RANDOM_STATE,
         ),
         'lightgbm': LGBMRegressor(
-             n_estimators=1000,
+            n_estimators=1000,
             learning_rate=0.05,
             num_leaves=15,
             subsample=0.8,

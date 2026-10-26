@@ -1,0 +1,24 @@
+data:
+    train_path: data/train.csv
+    test_path: data/test.csv
+
+cv:
+    n_splits: 5
+    random_state: 42
+
+models:
+    ridge: {}
+    xgboost:
+        n_estimators: 1000
+        learning_rate: 0.05
+        max_depth: 3
+        subsample: 0.8
+        colsample_bytree: 0.8
+    lightgbm: 
+        n_estimators: 1000
+        earning_rate: 0.05
+        num_leaves: 15
+        subsample: 0.8
+        subsample_freq: 1
+        olsample_bytree: 0.8
+        verbose: -1
