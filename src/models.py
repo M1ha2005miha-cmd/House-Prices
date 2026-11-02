@@ -6,11 +6,13 @@ from sklearn.pipeline import Pipeline
 from xgboost import XGBRegressor
 
 from src.preprocessing import build_preprocessor
+from src.neural_net import TorchMLRegressor
 
 REGRESSORS = {
     'ridge': Ridge,
     'xgboost': XGBRegressor,
     'lightgbm': LGBMRegressor,
+    'mlp': TorchMLRegressor
 }
 
 
@@ -23,3 +25,5 @@ def build_model(name: str, params: dict, num_cols: list[str], cat_cols: list[str
         ('preprocessor', build_preprocessor(num_cols, cat_cols)),
         ('regressor', get_regressor(name, params, random_state=random_state)),
     ])
+
+from src.neural_net import TorchMLRegressor

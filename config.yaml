@@ -22,3 +22,10 @@ models:
         subsample_freq: 1
         colsample_bytree: 0.8
         verbose: -1
+    mlp:
+        hidden_size: 128
+        dropout: 0.3
+        lr: 0.001
+        weight_decay: 0.001
+        epochs: 200
+        
