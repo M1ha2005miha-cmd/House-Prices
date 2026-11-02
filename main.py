@@ -45,13 +45,38 @@ def run_cross_validation(
     return pd.DataFrame(rows).sort_values('rmse_mean')
 
 
+def make_submission(
+    config: dict,
+    features: pd.DataFrame,
+    target: pd.Series,
+    test: pd.DataFrame,
+    num_cols: list[str],
+    cat_cols: list[str],
+) -> pd.DataFrame:
+    predictions = []
+    for name in config['ensemble']['models']:
+        params = config['models'][name]
+        model = build_model(name, params, num_cols, cat_cols, config['cv']['random_state'])
+        model.fit(features, target)
+        predictions.append(model.predict(test))
+
+    log_price = np.mean(predictions, axis=0)
+    return pd.DataFrame({'Id': test['Id'], 'SalePrice': np.expm1(log_price)})
+
+
 def main():
     config = load_config('config.yaml')
     features, target, test = load_data(config)
     num_cols, cat_cols = split_feature_types(features)
-
+    
     cv_results = run_cross_validation(config, features, target, num_cols, cat_cols)
     print(cv_results.to_string(index=False, float_format='%.4f'))
+
+    submission = make_submission(config, features, target, test, num_cols, cat_cols)
+    submission.to_csv(config['data']['submission_path'], index=False)
+    print(f'Submission saved: {config['data']['submission_path']}')
+    
+    
     
 
 if __name__ == '__main__':

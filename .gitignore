@@ -15,3 +15,6 @@ __pycache__/
 
 # черновик ipynb
 nn.ipynb
+
+# результаты предсказаний
+submission.csv

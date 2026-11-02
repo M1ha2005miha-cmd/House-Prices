@@ -1,6 +1,7 @@
 data:
     train_path: data/train.csv
     test_path: data/test.csv
+    submission_path: submission.csv
 
 cv:
     n_splits: 5
@@ -28,6 +29,6 @@ models:
         lr: 0.001
         weight_decay: 0.001
         epochs: 200
-        
+
 ensemble:
     models: [ridge, xgboost, mlp]
