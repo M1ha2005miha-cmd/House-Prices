@@ -20,9 +20,9 @@ def get_regressor(name: str, params: dict, random_state: int) -> BaseEstimator:
     return REGRESSORS[name](**params, random_state=random_state)
 
 
-def build_model(name: str, params: dict, num_cols: list[str], cat_cols: list[str], random_state: int) -> Pipeline:
+def build_model(name: str, params: dict, num_cols: list[str], cat_cols: list[str], random_state: int, cat_encoder: str) -> Pipeline:
     return Pipeline([
-        ('preprocessor', build_preprocessor(num_cols, cat_cols)),
+        ('preprocessor', build_preprocessor(num_cols, cat_cols, cat_encoder)),
         ('regressor', get_regressor(name, params, random_state=random_state)),
     ])
 

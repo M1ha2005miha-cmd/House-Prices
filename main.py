@@ -19,6 +19,10 @@ def load_data(config: dict) -> tuple[pd.DataFrame, pd.Series, pd.DataFrame]:
     train = apply_static_transform(remove_outliers(train))
     test = apply_static_transform(test)
 
+    drop_cols = config['data']['drop_features']
+    train = train.drop(columns=drop_cols)
+    test = test.drop(columns=drop_cols)
+
     features = train.drop(columns=['Id', 'SalePrice'])
     target = np.log1p(train['SalePrice'])
     return features, target, test
@@ -39,7 +43,7 @@ def run_cross_validation(
 ) -> pd.DataFrame:
     rows = []
     for name, params in config['models'].items():
-        model = build_model(name, params, num_cols, cat_cols, config['cv']['random_state'])
+        model = build_model(name, params, num_cols, cat_cols, config['cv']['random_state'], config['preprocessing']['cat_encoder'])
         rmse_mean, rmse_std = evaluate_model(model, features, target, **config['cv'])
         rows.append({'model': name, 'rmse_mean': rmse_mean, 'rmse_std': rmse_std})
     return pd.DataFrame(rows).sort_values('rmse_mean')
@@ -56,7 +60,7 @@ def make_submission(
     predictions = []
     for name in config['ensemble']['models']:
         params = config['models'][name]
-        model = build_model(name, params, num_cols, cat_cols, config['cv']['random_state'])
+        model = build_model(name, params, num_cols, cat_cols, config['cv']['random_state'], config['preprocessing']['cat_encoder'])
         model.fit(features, target)
         predictions.append(model.predict(test))
 

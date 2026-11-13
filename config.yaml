@@ -2,10 +2,14 @@ data:
     train_path: data/train.csv
     test_path: data/test.csv
     submission_path: submission.csv
+    drop_features: []
 
 cv:
     n_splits: 5
     random_state: 42
+
+preprocessing: 
+    cat_encoder: onehot
 
 models:
     ridge: {}

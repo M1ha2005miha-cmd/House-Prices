@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder,StandardScaler
+from sklearn.preprocessing import OneHotEncoder, StandardScaler, OrdinalEncoder 
 
 NONE_FILL_COLS = [
     'PoolQC', 'MiscFeature', 'Alley', 'Fence', 'FireplaceQu',
@@ -60,15 +60,23 @@ def apply_static_transform(df: pd.DataFrame) -> pd.DataFrame:
     return df
     
 
-def build_preprocessor(num_cols: list[str], cat_cols: list[str]) -> ColumnTransformer:
+def build_preprocessor(num_cols: list[str], cat_cols: list[str], cat_encoder: str) -> ColumnTransformer:
+    if cat_encoder == 'onehot':
+        encoder = OneHotEncoder(handle_unknown='ignore',sparse_output=False)
+    elif cat_encoder == 'ordinal':
+        encoder = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1)
+    else: 
+        raise ValueError(f'Unknown cat_encoder: {cat_encoder}')
+
     num_pipeline = Pipeline([
         ('imputer', SimpleImputer(strategy='median')),
         ('scaler', StandardScaler()),
     ])
     cat_pipeline = Pipeline([
         ('imputer', SimpleImputer(strategy='most_frequent')),
-        ('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False)),
+        ('encoder', encoder),
     ])
+    
     return ColumnTransformer([
         ('num', num_pipeline, num_cols),
         ('cat', cat_pipeline, cat_cols),
