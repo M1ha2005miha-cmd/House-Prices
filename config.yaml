@@ -7,6 +7,7 @@ data:
 cv:
     n_splits: 5
     random_state: 42
+    stratified: true
 
 preprocessing: 
     cat_encoder: onehot
