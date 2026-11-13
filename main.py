@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd 
+from sklearn.model_selection import KFold
 import yaml
 
 from src.preprocessing import apply_static_transform, remove_outliers
@@ -57,12 +58,19 @@ def make_submission(
     num_cols: list[str],
     cat_cols: list[str],
 ) -> pd.DataFrame:
+    n_folds = config['ensemble']['n_folds']
+    if n_folds ==0:
+        train_parts = [np.arange(len(features))]
+    else:
+        cv = KFold(n_splits=config['cv']['n_splits'], shuffle=True, random_state=config['cv']['random_state'])
+        train_parts = [train_idx for train_idx, _ in cv.split(features)][:n_folds]
     predictions = []
-    for name in config['ensemble']['models']:
-        params = config['models'][name]
-        model = build_model(name, params, num_cols, cat_cols, config['cv']['random_state'], config['preprocessing']['cat_encoder'])
-        model.fit(features, target)
-        predictions.append(model.predict(test))
+    for train_idx in train_parts:
+        for name in config['ensemble']['models']:
+            params = config['models'][name]
+            model = build_model(name, params, num_cols, cat_cols, config['cv']['random_state'], config['preprocessing']['cat_encoder'])
+            model.fit(features.iloc[train_idx], target.iloc[train_idx])
+            predictions.append(model.predict(test))
 
     log_price = np.mean(predictions, axis=0)
     return pd.DataFrame({'Id': test['Id'], 'SalePrice': np.expm1(log_price)})
